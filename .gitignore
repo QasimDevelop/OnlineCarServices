@@ -1,2 +1,5 @@
 .env
 __pycache__
+load_dummy_stations.py
+*.log
+/env
