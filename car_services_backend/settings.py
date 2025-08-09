@@ -23,11 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l6%rd*ns*y$w=)5@$p%$+cw_7c0cp&_@!f%!&c2(gjm35av+7_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['13.62.23.104','localhost','127.0.0.1']
 
-
+SESSION_COOKIE_SECURE=True
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'oauth2_provider',
     'accounts',
+    'graphene_django'
 ]
 
 MIDDLEWARE = [
@@ -53,7 +55,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+GRAPHENE = {
+    "SCHEMA": "accounts.schema.schema"
+}
 ROOT_URLCONF = 'car_services_backend.urls'
 
 TEMPLATES = [
@@ -137,6 +141,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 OAUTH2_PROVIDER = {
@@ -164,3 +169,12 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Car Services API',
+    'DESCRIPTION': 'API for car services',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+APPEND_SLASH=False
+CSRF_COOKIE_SECURE=True

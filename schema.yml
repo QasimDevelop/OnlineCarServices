@@ -1,0 +1,707 @@
+openapi: 3.0.3
+info:
+  title: Car Services API
+  version: 1.0.0
+  description: API for car services
+paths:
+  /api/accounts/admin-only/:
+    get:
+      operationId: api_accounts_admin_only_retrieve
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/appointments/:
+    get:
+      operationId: api_accounts_appointments_list
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+          description: ''
+    post:
+      operationId: api_accounts_appointments_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+          description: ''
+  /api/accounts/appointments/{id}/:
+    get:
+      operationId: api_accounts_appointments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+          description: ''
+    put:
+      operationId: api_accounts_appointments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Appointment'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+          description: ''
+    patch:
+      operationId: api_accounts_appointments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAppointment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAppointment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAppointment'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+          description: ''
+    delete:
+      operationId: api_accounts_appointments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/accounts/hello/:
+    get:
+      operationId: api_accounts_hello_retrieve
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/register/:
+    post:
+      operationId: api_accounts_register_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegistration'
+          description: ''
+  /api/accounts/service-stations/:
+    get:
+      operationId: api_accounts_service_stations_list
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStation'
+          description: ''
+    post:
+      operationId: api_accounts_service_stations_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStation'
+          description: ''
+  /api/accounts/service-stations/{id}/:
+    get:
+      operationId: api_accounts_service_stations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStation'
+          description: ''
+    put:
+      operationId: api_accounts_service_stations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceStation'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStation'
+          description: ''
+    patch:
+      operationId: api_accounts_service_stations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceStation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceStation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceStation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStation'
+          description: ''
+    delete:
+      operationId: api_accounts_service_stations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/accounts/service-stations/nearby/:
+    get:
+      operationId: api_accounts_service_stations_nearby_retrieve
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/service-types/:
+    get:
+      operationId: api_accounts_service_types_list
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceType'
+          description: ''
+    post:
+      operationId: api_accounts_service_types_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+  /api/accounts/service-types/{id}/:
+    get:
+      operationId: api_accounts_service_types_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+    put:
+      operationId: api_accounts_service_types_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceType'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+    patch:
+      operationId: api_accounts_service_types_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceType'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceType'
+          description: ''
+    delete:
+      operationId: api_accounts_service_types_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        service_station_name:
+          type: string
+          readOnly: true
+        service_type_name:
+          type: string
+          readOnly: true
+        user_name:
+          type: string
+          readOnly: true
+        appointment_date:
+          type: string
+          format: date
+        appointment_time:
+          type: string
+          format: time
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        service_station:
+          type: integer
+        service_type:
+          type: integer
+      required:
+      - appointment_date
+      - appointment_time
+      - created_at
+      - id
+      - service_station
+      - service_station_name
+      - service_type
+      - service_type_name
+      - updated_at
+      - user
+      - user_name
+    PatchedAppointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        service_station_name:
+          type: string
+          readOnly: true
+        service_type_name:
+          type: string
+          readOnly: true
+        user_name:
+          type: string
+          readOnly: true
+        appointment_date:
+          type: string
+          format: date
+        appointment_time:
+          type: string
+          format: time
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        service_station:
+          type: integer
+        service_type:
+          type: integer
+    PatchedServiceStation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        services_offered:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceType'
+          readOnly: true
+        latitude:
+          type: number
+          format: double
+          readOnly: true
+        longitude:
+          type: number
+          format: double
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: integer
+          readOnly: true
+    PatchedServiceType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+    RoleEnum:
+      enum:
+      - user
+      - stations
+      - admin
+      type: string
+      description: |-
+        * `user` - user
+        * `stations` - stations
+        * `admin` - admin
+    ServiceStation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        services_offered:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceType'
+          readOnly: true
+        latitude:
+          type: number
+          format: double
+          readOnly: true
+        longitude:
+          type: number
+          format: double
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        address:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: integer
+          readOnly: true
+      required:
+      - address
+      - created_at
+      - email
+      - id
+      - latitude
+      - longitude
+      - name
+      - owner
+      - phone
+      - services_offered
+      - updated_at
+    ServiceType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - id
+      - name
+      - price
+    StatusEnum:
+      enum:
+      - pending
+      - confirmed
+      - in_progress
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `confirmed` - Confirmed
+        * `in_progress` - In Progress
+        * `completed` - Completed
+        * `cancelled` - Cancelled
+    UserRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - password
+      - username
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows: {}
