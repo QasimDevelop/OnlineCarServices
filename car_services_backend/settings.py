@@ -176,6 +176,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 APPEND_SLASH=False
-#CSRF_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
 import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
