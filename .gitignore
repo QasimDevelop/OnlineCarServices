@@ -1,5 +1,42 @@
+# --- General ---
+# Environment variables. Contains secret keys, never commit this.
 .env
-__pycache__
-load_dummy_stations.py
+
+# --- Python ---
+# Byte-compiled / optimized / C-extensions
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+/dist/
+/build/
+*.egg-info/
+*.egg
+
+# Virtual Environments - Very Important!
+/venv/
+/env/
+
+# --- Django ---
+# Generated static files. These are build artifacts.
+/staticfiles/
+
+# Log files
 *.log
-/env
+logs/
+
+# SQLite databases (if you ever use one for local development)
+*.sqlite3
+db.sqlite3
+
+# --- Custom Script ---
+# Your specific data loading script
+load_dummy_stations.py
+
+# --- IDE / Editor Files ---
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
