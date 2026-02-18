@@ -23,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l6%rd*ns*y$w=)5@$p%$+cw_7c0cp&_@!f%!&c2(gjm35av+7_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-ALLOWED_HOSTS = ['13.62.23.104','localhost','127.0.0.1']
+DEBUG = True
+ALLOWED_HOSTS = ['13.62.23.104','localhost','127.0.0.1','localhost']
 
 #SESSION_COOKIE_SECURE=True
 # Application definition
@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'oauth2_provider',
     'accounts',
-    'graphene_django'
+    'graphene_django',
+    'RepairOrder'
 ]
 
 MIDDLEWARE = [

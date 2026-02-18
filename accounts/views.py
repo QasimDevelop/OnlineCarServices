@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from django.utils.dateparse import parse_date
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
@@ -10,15 +13,37 @@ from .serializers import (
     ServiceStationSerializer,
     ServiceStationCreateSerializer,
     AppointmentSerializer,
-    AppointmentCreateSerializer
+    AppointmentCreateSerializer,
+    StationServiceSerializer,
+    AppointmentSlotsSerializer
 )
-from .models import ServiceStation # type: ignore
-from .models import User, ServiceType,Appointment
+from .models import AppointmentSlots, ServiceStation # type: ignore
+from .models import User, ServiceType,Appointment, StationService
 from .permissions import IsAdmin, IsServiceStation
 from math import radians, sin, cos, sqrt, atan2
 
 # Create your views here.
 
+class AppointmentSlotsByDayView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentSlotsSerializer
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get("appointment_date")
+
+        if not date_str:
+            raise ValidationError({"date": "Date query parameter is required (YYYY-MM-DD)."})
+
+        appointment_date = parse_date(date_str)
+        if not appointment_date:
+            raise ValidationError({"date": "Invalid date format."})
+
+        day_name = appointment_date.strftime('%A')
+
+        return AppointmentSlots.objects.filter(
+            AppointmentDay__iexact=day_name,
+            IsDeleted=False
+        ).order_by("AppointmentTime")
 class HelloView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -62,7 +87,14 @@ class ServiceStationListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+class StationServiceView(APIView):
 
+    def get(self, request,station_id):
+        st = ServiceStation.objects.get(id=station_id)
+        services=st.services_offered.all()
+        serializer = StationServiceSerializer(services, many=True)
+        return Response(serializer.data)
+        
 class ServiceStationDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ServiceStationSerializer
     permission_classes = [IsAuthenticated]
@@ -121,16 +153,20 @@ class NearbyServiceStationsView(APIView):
 
 # Appointment Views
 class AppointmentListCreateView(generics.ListCreateAPIView):
-    serializer_class = AppointmentSerializer
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AppointmentCreateSerializer
+        return AppointmentSerializer
+    
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         if self.request.user.role == 'admin':
-            return Appointment.objects.all()  # type: ignore
+            return Appointment.objects.filter(IsDeleted = 0 )  # type: ignore
         elif self.request.user.role == 'stations':
-            return Appointment.objects.filter(service_station__owner=self.request.user)  # type: ignore
+            return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0 )  # type: ignore
         else:
-            return Appointment.objects.filter(user=self.request.user)  # type: ignore
+            return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -141,8 +177,8 @@ class AppointmentDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         if self.request.user.role == 'admin':
-            return Appointment.objects.all()  # type: ignore
+            return Appointment.objects.filter(IsDeleted = 0)  # type: ignore
         elif self.request.user.role == 'stations':
-            return Appointment.objects.filter(service_station__owner=self.request.user)  # type: ignore
+            return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0)  # type: ignore
         else:
-            return Appointment.objects.filter(user=self.request.user)  # type: ignore
+            return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore

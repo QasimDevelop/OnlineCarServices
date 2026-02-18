@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import User, ServiceType, ServiceStation, Appointment
-
+from .models import *
+admin.site.register(StationService)
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display=('username','email','role')
@@ -32,3 +32,5 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_filter = ('status', 'appointment_date', 'service_type')
     search_fields = ('user__username', 'service_station__name')
     date_hierarchy = 'appointment_date'
+
+admin.site.register(AppointmentSlots)

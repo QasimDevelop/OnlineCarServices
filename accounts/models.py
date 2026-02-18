@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from RepairOrder.models import Vehicle  
 # Custom User model
 class User(AbstractUser):
     CHOICES = (
@@ -74,6 +74,8 @@ class StationService(models.Model):
     
     class Meta:
         unique_together = ['station', 'service_type']
+    def __str__(self):
+        return f"{self.station.name} - {self.service_type.name}"
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
@@ -93,8 +95,25 @@ class Appointment(models.Model):
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    AppointSlotID = models.ForeignKey('AppointmentSlots', on_delete=models.CASCADE, null=True, blank=True)
+    IsDeleted = models.BooleanField(default=False)
+    VehicleID = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True , related_name='appointments_vehicle')  # type: ignore
     def __str__(self):
         user_str = getattr(self.user, 'username', str(self.user))
         station_str = getattr(self.service_station, 'name', str(self.service_station))
         return f"{user_str} - {station_str} - {self.appointment_date}"
+
+class AppointmentSlots(models.Model):
+    AppointmentSlotsID = models.AutoField(primary_key=True)
+    AppointmentDay=models.CharField(max_length=20)
+    AppointmentTime=models.TimeField()
+    MaxAppointments=models.IntegerField()
+    CreatedBy=models.ForeignKey(User, on_delete=models.CASCADE)
+    CreatedAt=models.DateTimeField(auto_now_add=True)
+    UpdatedAt=models.DateTimeField(auto_now=True)
+    UpdatedBy=models.ForeignKey(User, on_delete=models.CASCADE, related_name='updated_slots',null=True , blank=True )
+    IsDeleted=models.BooleanField(default=False)  # type: ignore
+    VehicleID = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.AppointmentDay} at {self.AppointmentTime}"
