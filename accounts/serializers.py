@@ -80,10 +80,25 @@ class AppointmentSerializer(serializers.ModelSerializer):
     service_station_name = serializers.CharField(source='service_station.name', read_only=True)
     service_type_name = serializers.CharField(source='service_type.name', read_only=True)
     user_name = serializers.CharField(source='user.username', read_only=True)
-    
+    plate_number = serializers.CharField(source='VehicleID.PlateNumber', read_only=True)
+    vin = serializers.CharField(source='VehicleID.VIN', read_only=True)
     class Meta:
         model = Appointment
-        fields = '__all__'
+        fields = [
+            "id",
+            "service_station",
+            "service_station_name",
+            "service_type_name",
+            "service_type",
+            "notes",
+            "plate_number",
+            "vin",
+            "AppointSlotID",
+            "appointment_date",
+            "appointment_time",
+            "user_name",
+            "status"
+        ]
         read_only_fields = ('user',)
 
 class AppointmentCreateSerializer(serializers.ModelSerializer):
@@ -113,7 +128,7 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
             CreatedBy=user,
             defaults={'IsActive': True}
         )
-        appointment= Appointment.objects.create(
+        appointment = Appointment.objects.create(
             user=user,
             service_station=validated_data['service_station'],
             service_type=validated_data['service_type'],
@@ -123,7 +138,8 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
             AppointSlotID=validated_data.get('AppointSlotID', None),
             VehicleID=vehicle
         )
-        return appointment
+        
+        return appointment 
 
     def validate(self, attrs):
         appointment_date = attrs.get("appointment_date")
@@ -158,11 +174,13 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
             appointment_time=appointment_time
         ).count()
 
-        # 5. Check MaxAppointments
-        '''if existing_count >= slot.MaxAppointments:
+        if existing_count >= 3:
             raise serializers.ValidationError(
-                "This appointment slot is fully booked."
-            )'''
+            "This appointment slot is fully booked. Please select another slot."
+        )
+
+    # Optionally, set the slot in attrs for use in create()
+        attrs['AppointSlotID'] = slot
 
         return attrs
 

@@ -42,7 +42,7 @@ class AppointmentSlotsByDayView(ListAPIView):
 
         return AppointmentSlots.objects.filter(
             AppointmentDay__iexact=day_name,
-            IsDeleted=False
+            IsDeleted=False,
         ).order_by("AppointmentTime")
 class HelloView(APIView):
     permission_classes = [IsAuthenticated]
@@ -182,3 +182,8 @@ class AppointmentDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0)  # type: ignore
         else:
             return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore
+        def destroy(self, request, *args, **kwargs):
+            instance = self.get_object()
+            instance.IsDeleted = True
+            instance.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)

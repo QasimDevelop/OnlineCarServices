@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import JobCard, JobConcern , Vehicle
+from accounts.models import Appointment
 from django.utils import timezone
 
 class JobConcernInputSerializer(serializers.Serializer):
@@ -8,7 +9,7 @@ class JobConcernInputSerializer(serializers.Serializer):
 
 class CreateJobCardSerializer(serializers.ModelSerializer):
     #concerns = JobConcernInputSerializer(many=True, write_only=True)
-
+    appointment_id = serializers.IntegerField(write_only=True, required=False)  # To link the job card to an appointment
     class Meta:
         model = JobCard
         fields = [
@@ -19,13 +20,18 @@ class CreateJobCardSerializer(serializers.ModelSerializer):
             'CreatedBy',
             'CreatedOn',
             'JobCardNumber',
-            'StatusID'
-            #'concerns',  # <-- this is the nested input
+            'StatusID',
+            'appointment_id'
+            #'concerns'  # <-- this is the nested input
         ]
 
     def create(self, validated_data):
         concerns_data = validated_data.pop('concerns', [])
+        appointment_id = validated_data.pop('appointment_id', None)
+        vehicle = Appointment.objects.get(id=appointment_id).VehicleID 
         jobcard = JobCard.objects.create(**validated_data)
+        jobcard.VehicleID = vehicle
+        jobcard.save()
         for concern in concerns_data:
             JobConcern.objects.create(
                 JobCardID=jobcard,
@@ -34,6 +40,14 @@ class CreateJobCardSerializer(serializers.ModelSerializer):
                 CreatedBy=jobcard.CreatedBy,
                 CreatedOn=jobcard.CreatedOn,
             )
+        # Update appointment status if appointment_id is provided
+        if appointment_id:
+            try:
+                ap = Appointment.objects.get(id=appointment_id)
+                ap.status = 'in_progress'
+                ap.save()
+            except Appointment.DoesNotExist:
+                pass  # Optionally, raise a validation error here
         return jobcard
 class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -53,6 +67,6 @@ class JobCardListSerializer(serializers.ModelSerializer):
             'CreatedOn',
             'JobCardNumber',
             'StatusID',
-            'VehicleID',  # Include vehicle details in the response
+            'VehicleID'  
         ]  
 
