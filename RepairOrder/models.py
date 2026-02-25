@@ -17,11 +17,8 @@ class Vehicle(models.Model):
 class JobCard(models.Model):
     JobCardID = models.BigAutoField(primary_key=True , auto_created=True)
     JobCardTypeName = models.CharField(max_length=100)
-    BranchName = models.IntegerField()
-    VehicleID = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
-    Mileage = models.IntegerField(null=True, blank=True)
-    MileageUnitName = models.CharField(max_length=100, null=True, blank=True)
-    PaymentMethodName = models.CharField(max_length=100, null=True, blank=True)
+    ServiceStationID = models.ForeignKey('accounts.ServiceStation' , on_delete=models.CASCADE , null=True , blank=True)
+    VehicleID = models.ForeignKey('RepairOrder.Vehicle', on_delete=models.CASCADE, null=True, blank=True)
     StatusID = models.IntegerField(null=True, blank=True)
     JobCardStatusName = models.CharField(max_length=100, null=True, blank=True)
     JobCardOpenDate = models.DateTimeField(null=True, blank=True)
@@ -32,18 +29,7 @@ class JobCard(models.Model):
     ModifiedBy = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True, blank=True,related_name='jobcards_modified')
     IsDeleted = models.BooleanField(default=False)
     JobCardNumber = models.CharField(max_length=50)
-    FuelTankReading = models.FloatField(null=True, blank=True)
-    ServiceTypeName = models.CharField(max_length=100, null=True, blank=True)
-    SupervisorName = models.CharField(max_length=200, null=True, blank=True)
-    IsIRCompleted = models.BooleanField(null=True, blank=True)
-    IsMileageVerified = models.BooleanField(null=True, blank=True)
-    IsTaxFree = models.BooleanField(null=True, blank=True)
-    LaborPrice = models.FloatField(null=True, blank=True)
-    DriverName = models.CharField(max_length=500, null=True, blank=True)
-    IsWashing = models.BooleanField(null=True, blank=True)
-    WashingType = models.CharField(max_length=250, null=True, blank=True)
-    IsWarrantyClaim = models.BooleanField(null=True, blank=True)
-    VehicleCategoryName = models.CharField(max_length=500, null=True, blank=True)
+
     class Meta:
         db_table = "JobCard"
 
@@ -68,86 +54,6 @@ class JobConcern(models.Model):
         db_table = "JobConcern"
     def __str__(self):
         return f"JobConcern {self.JobConcernID}"
-
-class JobPart(models.Model):
-    JobPartID = models.AutoField(primary_key=True)
-    JobCard = models.ForeignKey(JobCard,on_delete=models.CASCADE,related_name="parts")
-    JobConcern = models.ForeignKey(JobConcern,on_delete=models.SET_NULL,null=True,blank=True,related_name="parts")
-    JobCardServiceID = models.IntegerField(null=True, blank=True)
-    StockPartID = models.IntegerField(null=True, blank=True)
-    IsNew = models.BooleanField(null=True, blank=True)
-    PurchasingPrice = models.FloatField(null=True, blank=True)
-    SellingPrice = models.FloatField(null=True, blank=True)
-    Quantity = models.FloatField(null=True, blank=True)
-    RequestedQuantity = models.FloatField(null=True, blank=True)
-    TaxAmount = models.FloatField(null=True, blank=True)
-    TotalAmount = models.FloatField(null=True, blank=True)
-    NetAmount = models.FloatField(null=True, blank=True)
-    Notes = models.CharField(max_length=1500, null=True, blank=True)
-    JobPartStatusName = models.CharField(max_length=100, null=True, blank=True)
-    UnitTypeName = models.CharField(max_length=100, null=True, blank=True)
-    JobPartConditionName = models.CharField(max_length=100, null=True, blank=True)
-    BrandName = models.CharField(max_length=200, null=True, blank=True)
-    JobAlternateID = models.IntegerField(null=True, blank=True)
-    PrimaryPartID = models.IntegerField(null=True, blank=True)
-    PriorityTypeName = models.CharField(max_length=100, null=True, blank=True)
-    AddJobPartTask = models.BooleanField(null=True, blank=True)
-    IsInclude = models.BooleanField(null=True, blank=True)
-    IsAvailable = models.BooleanField(null=True, blank=True)
-    ReadyToDeliverTime = models.DateTimeField(null=True, blank=True)
-    ReceivedTime = models.DateTimeField(null=True, blank=True)
-    RejectionNote = models.CharField(max_length=2000, null=True, blank=True)
-    IsShowOnInvoice = models.BooleanField(null=True, blank=True)
-    # Audit fields
-    CreatedBy = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, null=True, blank=True, related_name='jobparts_created')
-    CreatedOn = models.DateTimeField()
-    ModifiedBy = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True, blank=True, related_name='jobparts_modified')
-    ModifiedOn = models.DateTimeField(null=True, blank=True)
-    IsDeleted = models.BooleanField(default=False)
-    class Meta:
-        db_table = "JobPart"
-
-    def __str__(self):
-        return f"JobPart #{self.JobPartID}"
-
-class JobTask(models.Model):
-    JobTaskID = models.AutoField(primary_key=True)
-    JobCard = models.ForeignKey(JobCard,on_delete=models.CASCADE,related_name="tasks",db_column="JobCardID")
-    JobConcern = models.ForeignKey(JobConcern,on_delete=models.SET_NULL,null=True,blank=True,related_name="tasks",db_column="JobConcernID")
-    TaskDescription = models.CharField(max_length=1500, null=True, blank=True)
-    JobTaskCategoryName = models.CharField(max_length=100, null=True, blank=True)
-    JobTaskTypeName = models.IntegerField(null=True, blank=True)
-    Location = models.CharField(max_length=500, null=True, blank=True)
-    TotalAmount = models.FloatField(null=True, blank=True)
-    QAVerify = models.BooleanField(default=False)
-    VerifiedByUser = models.CharField(max_length=300, null=True, blank=True)
-    VerifiedOn = models.DateTimeField(null=True, blank=True)
-    QAComments = models.CharField(max_length=300, null=True, blank=True)
-    QANote = models.CharField(max_length=2000, null=True, blank=True)
-    IsInclude = models.BooleanField(null=True, blank=True)
-    RepairTypeName = models.CharField(max_length=100, null=True, blank=True)
-    LaborTaskID = models.IntegerField(null=True, blank=True)
-    LaborTime = models.BooleanField(null=True, blank=True)
-    PriorityTypeName = models.CharField(max_length=100, null=True, blank=True)
-    IsFree = models.BooleanField(null=True, blank=True)
-    TaxAmount = models.FloatField(null=True, blank=True)
-    CheckListTypeName = models.CharField(max_length=200, null=True, blank=True)
-    LaborHour = models.FloatField(null=True, blank=True)
-    LaborMins = models.FloatField(null=True, blank=True)
-    IsChargeToCustomer = models.BooleanField(null=True, blank=True)
-    LaborDescriptionArabic = models.CharField(max_length=2500, null=True, blank=True)
-    IsPendingTaskRemoved = models.BooleanField(null=True, blank=True)
-    # Audit fields
-    CreatedBy = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True, blank=True , related_name='jobtasks_created')
-    CreatedOn = models.DateTimeField()
-    ModifiedBy = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True, blank=True , related_name='jobtasks_modified')
-    ModifiedOn = models.DateTimeField(null=True, blank=True)
-    IsDeleted = models.BooleanField(default=False)
-    class Meta:
-        db_table = "JobTask"
-
-    def __str__(self):
-        return f"JobTask #{self.JobTaskID}"
 
 class ObjectType(models.Model):
     ObjectTypeID = models.AutoField(primary_key=True)
@@ -176,3 +82,19 @@ class JobCardTechnician (models.Model):
 
     def __str__(self):
         return f'JobCardTechnician {self.JobCardTechnicianID}'
+
+class TaskTechnician(models.Model):
+    TaskTechnicianID = models.AutoField(primary_key=True)
+    JobConcernID = models.ForeignKey(JobConcern , on_delete=models.CASCADE , related_name='assignedTechnicians')
+    EmployeeID = models.ForeignKey('accounts.Employee' , on_delete=models.CASCADE)
+    ActualTimeSpent = models.IntegerField(null=True, blank=True)
+    IsAccepted = models.BooleanField(null=True, blank=True)
+    AcceptedDateTime = models.DateTimeField(null=True, blank=True)
+    EndDateTime = models.DateTimeField(null=True, blank=True)
+    IsCompleted = models.BooleanField(default=False)
+    CreatedBy = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , related_name='tasktechnician_created')
+    CreatedOn = models.DateTimeField(auto_now=True)
+    IsDeleted = models.BooleanField(default=0)
+    JobCardID = models.ForeignKey('RepairOrder.JobCard', on_delete = models.CASCADE , null=True , blank=True)
+    def __str__(self):
+        return f'TaskTechnician {self.TaskTechnicianID} - Employee {self.EmployeeID}'

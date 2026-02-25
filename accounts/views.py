@@ -78,12 +78,12 @@ class ServiceStationListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.role == 'admin':
-            return ServiceStation.objects.all()  # type: ignore
-        elif self.request.user.role == 'stations':
-            return ServiceStation.objects.filter(owner=self.request.user)  # type: ignore
-        else:
-            return ServiceStation.objects.filter(is_active=True)  # type: ignore
+        #if self.request.user.role == 'admin':
+        #    return ServiceStation.objects.all()  # type: ignore
+        #elif self.request.user.role == 'stations':
+        #    return ServiceStation.objects.filter(owner=self.request.user)  # type: ignore
+        #else:
+        return ServiceStation.objects.filter(is_active=True)  # type: ignore
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -161,13 +161,8 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.role == 'admin':
             return Appointment.objects.filter(IsDeleted = 0 )  # type: ignore
-        elif self.request.user.role == 'stations':
-            return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0 )  # type: ignore
-        else:
-            return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore
-
+            #return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0 )  # type: ignore
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -176,12 +171,13 @@ class AppointmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.role == 'admin':
-            return Appointment.objects.filter(IsDeleted = 0)  # type: ignore
-        elif self.request.user.role == 'stations':
-            return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0)  # type: ignore
-        else:
-            return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore
+        #if self.request.user.role == 'admin':
+        #    return Appointment.objects.filter(IsDeleted = 0)  # type: ignore
+        #elif self.request.user.role == 'stations':
+        #    return Appointment.objects.filter(service_station__owner=self.request.user , IsDeleted = 0)  # type: ignore
+        #else:
+        return Appointment.objects.filter(user=self.request.user , IsDeleted = 0)  # type: ignore
+        
         def destroy(self, request, *args, **kwargs):
             instance = self.get_object()
             instance.IsDeleted = True

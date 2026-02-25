@@ -3,16 +3,10 @@ from django.contrib import admin
 # Register your models here.
 from .models import *
 admin.site.register(StationService)
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display=('username','email','role')
-    list_filter=('role',)
-    search_fields=('username','email')
-    list_per_page=10
-    list_editable=('role',)
-    list_display_links=('username','email')
-    list_max_show_all=100
-
+admin.site.register(Employee)
+admin.site.register(UserRole)
+admin.site.register(Roles)
+admin.site.register(User)
 @admin.register(ServiceType)
 class ServiceTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'description')

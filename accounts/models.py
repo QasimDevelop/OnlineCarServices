@@ -1,14 +1,8 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from RepairOrder.models import Vehicle  
 # Custom User model
 class User(AbstractUser):
-    CHOICES = (
-        ("user", "user"),
-        ("stations", "stations"),
-        ("admin", "admin")
-    )
-    role = models.CharField(max_length=10, choices=CHOICES, default="user")
     phone = models.CharField(max_length=10, null=True, blank=True)
     profile_picture = models.ImageField(upload_to="profile_pictures", null=True, blank=True)
 
@@ -65,6 +59,19 @@ class ServiceStation(models.Model):
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return R * c
 
+class Employee(models.Model):
+    EmployeeID = models.AutoField(primary_key=True)
+    User = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ServiceStation = models.ForeignKey(ServiceStation, on_delete=models.CASCADE, related_name='employees')
+    Name = models.CharField(max_length=200)
+    Phone = models.CharField(max_length=20, blank=True)
+    Email = models.EmailField(blank=True)
+    IsActive = models.BooleanField(default=True)
+    CreatedOn = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.Name
+    
 class StationService(models.Model):
     station = models.ForeignKey(ServiceStation, on_delete=models.CASCADE, related_name='services')
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
@@ -76,6 +83,7 @@ class StationService(models.Model):
         unique_together = ['station', 'service_type']
     def __str__(self):
         return f"{self.station.name} - {self.service_type.name}"
+
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
@@ -97,7 +105,7 @@ class Appointment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     AppointSlotID = models.ForeignKey('AppointmentSlots', on_delete=models.CASCADE, null=True, blank=True)
     IsDeleted = models.BooleanField(default=False)
-    VehicleID = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True , related_name='appointments_vehicle')  # type: ignore
+    VehicleID = models.ForeignKey('RepairOrder.Vehicle', on_delete=models.CASCADE, null=True, blank=True , related_name='appointments_vehicle')  # type: ignore
     def __str__(self):
         user_str = getattr(self.user, 'username', str(self.user))
         station_str = getattr(self.service_station, 'name', str(self.service_station))
@@ -108,12 +116,28 @@ class AppointmentSlots(models.Model):
     AppointmentDay=models.CharField(max_length=20)
     AppointmentTime=models.TimeField()
     MaxAppointments=models.IntegerField()
-    CreatedBy=models.ForeignKey(User, on_delete=models.CASCADE)
+    CreatedBy=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     CreatedAt=models.DateTimeField(auto_now_add=True)
     UpdatedAt=models.DateTimeField(auto_now=True)
     UpdatedBy=models.ForeignKey(User, on_delete=models.CASCADE, related_name='updated_slots',null=True , blank=True )
     IsDeleted=models.BooleanField(default=False)  # type: ignore
-    VehicleID = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
+    VehicleID = models.ForeignKey('RepairOrder.Vehicle', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.AppointmentDay} at {self.AppointmentTime}"
+    
+class Roles(models.Model):
+    RoleID = models.AutoField(primary_key=True)
+    RoleName = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.RoleName
+
+class UserRole(models.Model):
+    UserRoleID = models.AutoField(primary_key=True)
+    User = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Role = models.ForeignKey(Roles, on_delete=models.CASCADE)
+    AssignedOn = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.User.username} - {self.Role.RoleName}"
